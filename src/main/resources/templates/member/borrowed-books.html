@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrowed Books</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        /* Additional Styling */
+        body {
+            background-color: #f8f9fa;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        .btn-secondary {
+            margin-top: 1rem;
+        }
+
+        table {
+            margin-top: 1rem;
+            background: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table-striped tbody tr:hover {
+            background-color: #f1f9ff;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #777;
+            font-size: 1rem;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h1 class="mb-4">Borrowed Books</h1>
+
+    <!-- Search Form -->
+    <form id="searchForm" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="Search by title">
+            </div>
+            <div class="col-md-4">
+                <label for="author" class="form-label">Author</label>
+                <input type="text" class="form-control" id="author" placeholder="Search by author">
+            </div>
+            <div class="col-md-4">
+                <label for="genre" class="form-label">Genre</label>
+                <input type="text" class="form-control" id="genre" placeholder="Search by genre">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary mt-3" id="searchButton">Search</button>
+    </form>
+
+    <!-- Results Table -->
+    <div id="resultsContainer" class="table-responsive">
+        <table class="table table-striped">
+            <thead class="table-primary">
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Availability</th>
+            </tr>
+            </thead>
+            <tbody id="resultsTableBody">
+            <!-- Dynamic rows will be inserted here -->
+            </tbody>
+        </table>
+        <div id="noResultsMessage" class="no-results" style="display: none;">No books found.</div>
+    </div>
+
+    <!-- Back to Dashboard Link -->
+    <a th:href="@{/user-dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+<script>
+    document.getElementById('searchButton').addEventListener('click', function () {
+        // Get form input values
+        const title = document.getElementById('title').value;
+        const author = document.getElementById('author').value;
+        const genre = document.getElementById('genre').value;
+
+        // Make an HTTP GET request to the endpoint
+        axios.get('/member/borrowed-books-data', {
+            params: {
+                title: title,
+                author: author,
+                genre: genre
+            }
+        })
+            .then(response => {
+                const books = response.data;
+                const resultsTableBody = document.getElementById('resultsTableBody');
+                const noResultsMessage = document.getElementById('noResultsMessage');
+
+                // Clear previous results
+                resultsTableBody.innerHTML = '';
+
+                // Display message if no books found
+                if (books.length === 0) {
+                    noResultsMessage.style.display = 'block';
+                    return;
+                }
+
+                noResultsMessage.style.display = 'none';
+
+                // Populate table with results
+                books.forEach(book => {
+                    const row = `
+                    <tr>
+                        <td>${book.title}</td>
+                        <td>${book.author.name}</td>
+                        <td>${book.genre}</td>
+                        <td>${book.copiesAvailable > 0 ? 'Available' : 'Unavailable'}</td>
+                    </tr>`;
+                    resultsTableBody.innerHTML += row;
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching books:', error);
+                alert('An error occurred while fetching the books. Please try again.');
+            });
+    });
+</script>
+</body>
+</html>

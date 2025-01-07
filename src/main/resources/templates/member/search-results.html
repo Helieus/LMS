@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Books</title>
+    <style>
+        /* Reset and Basic Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: #fff;
+            width: 90%;
+            max-width: 900px;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        table th {
+            background-color: #0095ff;
+            color: #fff;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #e6f7ff;
+        }
+
+        .btn {
+            background-color: #0095ff;
+            color: #fff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #0077cc;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background-color: #6c757d;
+            color: #fff;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            margin-top: 2rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #565e64;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Available Books</h1>
+    <!-- Table for Available Books -->
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Author</th>
+            <th>Copies Available</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Show books with copiesAvailable > 0 -->
+        <tr th:each="book : ${books}" th:if="${book.copiesAvailable > 0}">
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.genre}"></td>
+            <td th:text="${book.author.name}"></td>
+            <td th:text="${book.copiesAvailable}"></td>
+            <td>
+                <!-- Show 'Borrow' button only if the user has not borrowed any book -->
+                <a class="btn" th:if="${user != null and user.borrowedBooks.size() == 0}"
+                   th:href="@{/member/borrow/{id}(id=${book.id})}">Borrow</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="container">
+    <h1>Borrowed Books</h1>
+    <!-- Table for Borrowed Books -->
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Author</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Show books borrowed by the current user -->
+        <tr th:each="book : ${user.borrowedBooks}">
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.genre}"></td>
+            <td th:text="${book.author.name}"></td>
+            <td>
+                <!-- Show 'Return' button for borrowed books -->
+                <a class="btn" th:href="@{/member/return/{id}(id=${book.id})}">Return</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<a th:href="@{/user-dashboard}" class="back-btn">Back to Dashboard</a>
+</body>
+</html>

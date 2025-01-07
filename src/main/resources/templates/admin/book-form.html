@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Form</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Custom Styling */
+        body {
+            background-color: #f8f9fa;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem;
+        }
+
+        .container {
+            background: #fff;
+            max-width: 600px;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            margin-top: 1rem;
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #565e64;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Add Book</h1>
+    <form th:action="@{/admin/book/add}" th:object="${book}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title:</label>
+            <input type="text" class="form-control" id="title" th:field="*{title}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="genre" class="form-label">Genre:</label>
+            <input type="text" class="form-control" id="genre" th:field="*{genre}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="authorId" class="form-label">Author ID:</label>
+            <input type="number" class="form-control" id="authorId" th:field="*{author.id}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="isbn" class="form-label">ISBN:</label>
+            <input type="text" class="form-control" id="isbn" th:field="*{isbn}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="copiesAvailable" class="form-label">Copies Available:</label>
+            <input type="number" class="form-control" id="copiesAvailable" th:field="*{copiesAvailable}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="publicationDate" class="form-label">Publication Date:</label>
+            <input type="date" class="form-control" id="publicationDate" th:field="*{publicationDate}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="summary" class="form-label">Summary:</label>
+            <textarea class="form-control" id="summary" th:field="*{summary}" rows="5"></textarea>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="/admin-dashboard" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

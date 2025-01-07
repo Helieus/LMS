@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Management</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    /* Custom Styling */
+    body {
+      background-color: #f8f9fa;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+    }
+
+    .container {
+      background: #fff;
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #444;
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    table th, table td {
+      text-align: center;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+    }
+
+    table th {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    table tr:hover {
+      background-color: #e6f7ff;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+      background-color: #a71d2a;
+    }
+
+    .btn-secondary {
+      margin-top: 1rem;
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background-color: #565e64;
+    }
+
+    .form-label {
+      font-weight: bold;
+    }
+
+    form {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Book Management</h1>
+
+  <!-- Return to Dashboard Button -->
+  <div class="text-end mb-4">
+    <a href="/admin-dashboard" class="btn btn-secondary">Return to Dashboard</a>
+  </div>
+
+  <!-- Display all books (READ) -->
+  <h2>All Books</h2>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>ISBN</th>
+        <th>Genre</th>
+        <th>Publication Date</th>
+        <th>Author</th>
+        <th>Copies Available</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="b : ${books}">
+        <td th:text="${b.title}"></td>
+        <td th:text="${b.isbn}"></td>
+        <td th:text="${b.genre}"></td>
+        <td th:text="${b.publicationDate}"></td>
+        <td th:text="${b.author != null ? b.author.name : 'No Author'}"></td>
+        <td th:text="${b.copiesAvailable}"></td>
+        <td>
+          <!-- EDIT link -->
+          <a th:href="@{/admin/books/edit/{id}(id=${b.id})}" class="btn btn-primary btn-sm">Edit</a>
+          <!-- DELETE link -->
+          <a th:href="@{/admin/books/delete/{id}(id=${b.id})}" class="btn btn-danger btn-sm">Delete</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CREATE/UPDATE FORM -->
+  <h2 th:text="${book.id != null} ? 'Edit Book' : 'Add New Book'"></h2>
+  <form th:action="@{/admin/books/save}" th:object="${book}" method="post" class="mt-4">
+    <div th:if="${book.id != null}" class="mb-3">
+      <label class="form-label">Book ID:</label>
+      <span th:text="${book.id}"></span>
+      <input type="hidden" th:field="*{id}">
+    </div>
+
+    <div class="mb-3">
+      <label for="title" class="form-label">Title:</label>
+      <input type="text" id="title" class="form-control" th:field="*{title}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="isbn" class="form-label">ISBN:</label>
+      <input type="text" id="isbn" class="form-control" th:field="*{isbn}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="genre" class="form-label">Genre:</label>
+      <input type="text" id="genre" class="form-control" th:field="*{genre}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="publicationDate" class="form-label">Publication Date:</label>
+      <input type="date" id="publicationDate" class="form-control" th:field="*{publicationDate}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="copiesAvailable" class="form-label">Copies Available:</label>
+      <input type="number" id="copiesAvailable" class="form-control" th:field="*{copiesAvailable}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="summary" class="form-label">Summary:</label>
+      <textarea id="summary" class="form-control" rows="5" th:field="*{summary}"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="author" class="form-label">Author:</label>
+      <select id="author" class="form-select" th:field="*{author.id}">
+        <option value="">--Select an Author--</option>
+        <option th:each="auth : ${authors}" th:value="${auth.id}" th:text="${auth.name}" th:selected="${book.author != null and book.author.id == auth.id}"></option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary" th:text="${book.id != null} ? 'Update Book' : 'Save Book'"></button>
+  </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard</title>
+  <style>
+    /* Reset and Basic Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f0f2f5;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .container {
+      background: #fff;
+      width: 80%;
+      max-width: 600px;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 1.5rem;
+      color: #444;
+    }
+
+    .welcome-message {
+      margin-bottom: 2rem;
+      font-size: 1.2rem;
+      color: #666;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .nav-buttons a {
+      text-decoration: none;
+      color: #fff;
+      background-color: #0095ff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-buttons a:hover {
+      background-color: #0077cc;
+    }
+
+    .logout-btn {
+      display: inline-block;
+      background-color: #d9534f;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #b52a2a;
+    }
+    .borrow-alert {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      padding: 15px;
+      border: 1px solid #badbcc;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Welcome to the Library!</h1>
+  <p class="welcome-message">Hello, <span th:text="${user.username}">User</span>! Explore the library and manage your books.</p>
+  <!-- Navigation Buttons -->
+  <div th:if="${borrowMessage != null}" class="borrow-alert">
+    <p th:text="${borrowMessage}"></p>
+  </div>
+  <div class="nav-buttons">
+    <a th:href="@{/member/search-results}">Borrow a Book</a>
+    <a th:href="@{/member/borrowed-books}">Search for Books</a>
+  </div>
+
+  <!-- Logout Button -->
+  <a href="/logout">
+    <button type="button" class="logout-btn">Logout</button>
+  </a>
+</div>
+</body>
+</html>
